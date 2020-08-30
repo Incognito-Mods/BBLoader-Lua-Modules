@@ -347,7 +347,7 @@ do
       }
       currentRectPoints[2].y = currentRectPoints[2].y + 2
       
-      currentRectArgs = {xPos = math.floor(currentRectPoints[1].x + 0.5), yPos = math.floor(currentRectPoints[1].y + 0.5), width = math.floor(currentRectPoints[2].x - currentRectPoints[1].x + 0.5), height = 2}
+      currentRectArgs = {xPos = GfxPlus.Math.round(currentRectPoints[1].x ), yPos = GfxPlus.Math.round(currentRectPoints[1].y), width = GfxPlus.Math.round(currentRectPoints[2].x - currentRectPoints[1].x), height = 2}
       
       
       Gfx.drawRectangle(currentRectArgs.xPos, currentRectArgs.yPos, currentRectArgs.width, currentRectArgs.height, triangleFill)
@@ -425,6 +425,10 @@ do
   
   function GfxPlus.Math.pointLerp(p1x, p1y, p2x, p2y, value)
     return {x = GfxPlus.Math.lerp(p1x, p2x, value), y = GfxPlus.Math.lerp(p1y, p2y, value)}
+  end
+  
+  function GfxPlus.Math.round(value)
+    return math.floor(value + 0.5)
   end
   
 end
