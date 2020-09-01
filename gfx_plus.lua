@@ -356,6 +356,100 @@ do
     Gfx.popMatrix()
   end
   
+  
+  GfxPlus.__ellipseMode = {horizAlign = 1, vertAlign = 1}
+  function GfxPlus.ellipseMode(horiz, vert)
+    if type(horiz) == "number" then
+      if not horiz % 1 then
+        GfxPlus.__ellipseMode.horizAlign = horiz % 3
+      end
+    else
+      if type(horiz) == "string" then
+        if horiz:lower() == "left" then
+          GfxPlus.__ellipseMode.horizAlign = 0
+          
+        elseif horiz:lower() == "center" then
+          GfxPlus.__ellipseMode.horizAlign = 1
+          
+        elseif horiz:lower() == "right" then
+          GfxPlus.__ellipseMode.horizAlign = 2
+          
+        end
+      end
+    end
+    
+    
+    if type(vert) == "number" then
+      if not vert % 1 then
+        GfxPlus.__ellipseMode.vertAlign = vert % 3
+      end
+    else
+      if type(vert) == "string" then
+        if vert:lower() == "top" then
+          GfxPlus.__ellipseMode.vertAlign = 0
+          
+        elseif vert:lower() == "center" then
+          GfxPlus.__ellipseMode.vertAlign = 1
+          
+        elseif vert:lower() == "bottom" then
+          GfxPlus.__ellipseMode.vertAlign = 2
+          
+        end
+      end
+    end
+    
+  end
+  
+  function GfxPlus.ellipse(x, y, ellipseWidth, ellipseHeight, optFill, optStroke, optStrokeWeight)
+    local ellipseFill
+    local ellipseFillTemp
+    if GfxPlus.isColor(optFill) then
+      ellipseFill = optFill:toGfxColorObj()
+      ellipseFillTemp = optFill
+    else
+      ellipseFill = GfxPlus.__fillColor:toGfxColorObj()
+      ellipseFillTemp = GfxPlus.__fillColor
+    end
+    
+    
+    
+    local ellipseStroke
+    if GfxPlus.isColor(optStroke) then
+      ellipseStroke = optStroke:toGfxColorObj()
+    else
+      ellipseStroke = GfxPlus.__strokeColor:toGfxColorObj()
+    end
+    
+    local ellipseStrokeWeight = optStrokeWeight or GfxPlus.__strokeWeight
+    
+    
+    startingPoint = {x = x - (GfxPlus.__ellipseMode.horizAlign - 1) * (ellipseWidth / 2), y = y - GfxPlus.__ellipseMode.vertAlign * (ellipseHeight / 2)}
+    
+    
+    local currEllipRectIndex = 0
+    
+    while currEllipRectIndex <= ellipseHeight do
+      local currEllipRectTrueWidth = math.sqrt(ellipseHeight^2 - (currEllipRectIndex*2-ellipseHeight)^2) * ellipseWidth / ellipseHeight
+      
+      --And now for anti-aliasing calculations on the CPU.
+      local currEllipSolidRectX = startingPoint.x - math.floor(currEllipRectTrueWidth / 2)
+      local currEllipTranspRectX = startingPoint.x - math.ceil(currEllipRectTrueWidth / 2)
+      local currEllipSolidRectWidth = math.floor(currEllipRectTrueWidth / 2) * 2
+      local currEllipTranspRectWidth = math.ceil(currEllipRectTrueWidth / 2) * 2
+      local currEllipTranspColor = GfxPlus.color(
+        ellipseFillTemp.r,
+        ellipseFillTemp.g,
+        ellipseFillTemp.b,
+        GfxPlus.Math.round(ellipseFillTemp.a * (currEllipRectTrueWidth - currEllipSolidRectWidth) / 3 * (currEllipSolidRectX - currEllipTranspRectX)) 
+      ):toGfxColorObj()
+      
+      Gfx.drawRectangle(currEllipTranspRectX, startingPoint.y + currEllipRectIndex, currEllipTranspRectWidth, 1, currEllipTranspColor)
+      Gfx.drawRectangle(currEllipSolidRectX, startingPoint.y + currEllipRectIndex, currEllipSolidRectWidth, 1, ellipseFill)
+      
+      currEllipRectIndex = currEllipRectIndex + 1
+    end
+  end
+  
 end
 
 --This is the end of the shape drawing commands
