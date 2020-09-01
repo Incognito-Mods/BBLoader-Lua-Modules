@@ -244,7 +244,7 @@ end
 
 --This is the start of the shape drawing commands
 do
-  function GfxPlus.rect(x, y, rectWidth, rectheight, optFill, optStroke, optStrokeWeight)
+  function GfxPlus.rect(x, y, rectWidth, rectHeight, optFill, optStroke, optStrokeWeight)
     local rectFill
     if GfxPlus.isColor(optFill) then
       rectFill = optFill:toGfxColorObj()
@@ -262,16 +262,14 @@ do
     local rectStrokeWeight = optStrokeWeight or GfxPlus.__strokeWeight
     
     --Rectangle fill
-    Gfx.drawRectangle(x, y, rectWidth, rectheight, rectFill)
+    Gfx.drawRectangle(x, y, rectWidth, rectHeight, rectFill)
     
     
     --Rectangle outline/stroke
-    if not rectStrokeWeight == 0 then
-      Gfx.drawRectangle(x      -strokeWeight/2,         y       -strokeWeight/2,         rectWidth+strokeWeight,                   strokeWeight,        rectStroke)  -- top    line
-      Gfx.drawRectangle(x      -strokeWeight/2,         y       -strokeWeight/2,                   strokeWeight,        rectHeight+strokeWeight,        rectStroke)  -- left   line
-      Gfx.drawRectangle(x+width-strokeWeight/2,         y       -strokeWeight/2,                   strokeWeight,        rectHeight+strokeWeight,        rectStroke)  -- right  line
-      Gfx.drawRectangle(x      -strokeWeight/2,         y+height-strokeWeight/2,         rectWidth+strokeWeight,                   strokeWeight,        rectStroke)  -- bottom line
-    end
+    Gfx.drawRectangle(x          -rectStrokeWeight/2,         y           -rectStrokeWeight/2,         rectWidth+rectStrokeWeight,                   rectStrokeWeight,        rectStroke)  -- top    line
+    Gfx.drawRectangle(x          -rectStrokeWeight/2,         y           -rectStrokeWeight/2,                   rectStrokeWeight,        rectHeight+rectStrokeWeight,        rectStroke)  -- left   line
+    Gfx.drawRectangle(x+rectWidth-rectStrokeWeight/2,         y           -rectStrokeWeight/2,                   rectStrokeWeight,        rectHeight+rectStrokeWeight,        rectStroke)  -- right  line
+    Gfx.drawRectangle(x          -rectStrokeWeight/2,         y+rectHeight-rectStrokeWeight/2,         rectWidth+rectStrokeWeight,                   rectStrokeWeight,        rectStroke)  -- bottom line
     
   end
   
