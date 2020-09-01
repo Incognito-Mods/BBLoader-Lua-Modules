@@ -448,6 +448,19 @@ do
     end
   end
   
+  function GfxPlus.line(p1x, p1y, p2x, p2y, optStroke, optStrokeWeight)
+    local lineStroke
+    if GfxPlus.isColor(optStroke) then
+      lineStroke = optStroke:toGfxColorObj()
+    else
+      lineStroke = GfxPlus.__strokeColor:toGfxColorObj()
+    end
+    local lineStrokeWeight = optStrokeWeight or GfxPlus.__strokeWeight
+    Gfx.rotate(p1x, p1y, math.deg(GfxPlus.Math.points2Angle(p1x, p1y, p2x, p2y)))
+      Gfx.drawRectangle(p1x, p1y - math.floor(lineStrokeWeight / 2), GfxPlus.Math.round(GfxPlus.Math.pointDist(p1x, p1y, p2x, p2y)), lineStrokeWeight, lineStroke)
+    Gfx.popMatrix()
+  end
+  
 end
 
 --This is the end of the shape drawing commands
